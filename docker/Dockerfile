@@ -173,6 +173,11 @@ RUN yarn install --production --network-timeout 100000 && yarn cache clean
 WORKDIR /app
 USER anythingllm
 
+# Security hardening: remove protobufjs CLI (contains vulnerable taffydb) not needed at runtime
+# Corrected to target the actual locations in both 'server' and 'collector' directories.
+RUN rm -rf /app/server/node_modules/onnx-proto/node_modules/protobufjs/cli && \
+    rm -rf /app/collector/node_modules/protobufjs/cli
+
 # Since we are building from backend-build we just need to move built frontend into server/public
 FROM backend-build AS production-build
 WORKDIR /app
